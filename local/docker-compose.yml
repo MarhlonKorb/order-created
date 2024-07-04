@@ -1,0 +1,19 @@
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+# Start no serviço do MongoDB
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=123
+
+  rabbitmq:
+# Configuração do painel administrativo do RabbitMq
+    image: rabbitmq:3.13-management
+    ports:
+# Porta para acessar o painel
+      - 15672:15672
+# Porta em que o RabbitMq estará rodando
+      - 5672:5672
+# Usuário e senha do RabbitMq: guest
