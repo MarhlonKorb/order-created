@@ -6,9 +6,13 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Classe de configuração inicial do sistema de mensageria
+ */
 @Configuration
 public class RabbitMqConfig {
 
+    /** Nome da fila */
     public static final String ORDER_CREATED_QUEUE = "orders-queue";
 
     @Bean

@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -27,6 +28,11 @@ public class OrderServiceImpl {
         this.mongoTemplate = mongoTemplate;
     }
 
+    /**
+     * Calcula o valor total de um pedido.
+     * @param event
+     * @return
+     */
     private static BigDecimal getTotal(OrderCreatedEvent event) {
         return event.itens()
                 .stream()
@@ -48,19 +54,32 @@ public class OrderServiceImpl {
         orderRepository.save(entity);
     }
 
+    /**
+     * Busca todos os pedidos do cliente pelo seu id.
+     * Retorna os registros com paginação.
+     *
+     * @param customerId
+     * @param pageRequest
+     * @return
+     */
     public Page<OrderResponse> findAllByCustomerId(Long customerId, PageRequest pageRequest) {
         final var orders = orderRepository.findAllByCustomerId(customerId, pageRequest);
         return orders.map(OrderResponse::fromEntity);
     }
 
+    /**
+     * Busca o valor total dos pedidos de um cliente pelo seu id
+     *
+     * @param customerId
+     * @return BigDecimal
+     */
     public BigDecimal findTotalOnOrdersByCustomerId(Long customerId) {
         var aggregations = Aggregation.newAggregation(
                 (AggregationOperation) Aggregation.match(Criteria.where("customerId").is(customerId)),
                 Aggregation.group().sum("total").as("total")
         );
-
+        // Executa a busca dos registros de acordo com a aggregation criada
         var response = mongoTemplate.aggregate(aggregations, "tb_orders", Document.class);
-
         return new BigDecimal(response.getUniqueMappedResult().get("total").toString());
     }
 }

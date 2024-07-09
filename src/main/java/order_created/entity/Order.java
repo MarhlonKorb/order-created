@@ -5,13 +5,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 @Document(collection = "tb_orders")
 public class Order {
-
     @MongoId
     private Long orderId;
     @Indexed(name = "customer_id_index")

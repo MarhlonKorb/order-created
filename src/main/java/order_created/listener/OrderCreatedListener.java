@@ -9,6 +9,9 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import static order_created.config.RabbitMqConfig.ORDER_CREATED_QUEUE;
 
+/**
+ * Classe configurada para ser a consumidora(listener) do serviço de mensageria de criação de pedidos.
+ */
 @Component
 public class OrderCreatedListener {
 
@@ -20,9 +23,14 @@ public class OrderCreatedListener {
         this.orderService = orderService;
     }
 
+    /**
+     * Método que será chamado quando uma mensagem for recebida na fila ORDER_CREATED_QUEUE
+     * @param message
+     */
     @RabbitListener(queues = ORDER_CREATED_QUEUE)
     public void listen(Message<OrderCreatedEvent> message){
         logger.info("Message consumed: {}", message);
+        // Salva o evento de criação do pedido usando o serviço
         orderService.save(message.getPayload());
     }
 }
